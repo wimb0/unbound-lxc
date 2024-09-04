@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 source <(curl -s https://raw.githubusercontent.com/wimb0/unbound-lxc/main/build.func)
 # Copyright (c) 2021-2024 tteck
+# Modified by wimb0
 # Author: tteck (tteckster)
 # License: MIT
 # https://github.com/tteck/Proxmox/raw/main/LICENSE
