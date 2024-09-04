@@ -66,6 +66,8 @@ server:
   log-queries: yes
 EOF
   wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
+  touch /var/log/unbound.log
+  chown unbound:unbound /var/log/unbound.log
   systemctl enable -q --now unbound
   msg_info "Restarting Unbound to load new config"
   systemctl restart unbound
