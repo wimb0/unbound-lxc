@@ -61,7 +61,10 @@ server:
 EOF
   wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
   systemctl enable -q --now unbound
+  msg_info "Restarting Unbound to load new config"
+  systemctl restart unbound
   msg_ok "Installed Unbound"
+  
 
 motd_ssh
 customize
