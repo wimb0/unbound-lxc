@@ -73,5 +73,5 @@ build_container
 description
 
 msg_ok "Completed Successfully!\n"
-echo -e "${APP} Unbound should be available at.
+echo -e "${APP} Unbound DNS should be available at:
          ${BL}${IP}:5335${CL} \n"
