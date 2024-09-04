@@ -64,6 +64,7 @@ server:
   logfile: /var/log/unbound.log
   verbosity: 1
   log-queries: yes
+  control-enable: yes
 EOF
 
 cat <<EOF >/etc/logrotate.d/unbound
