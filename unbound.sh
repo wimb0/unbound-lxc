@@ -56,11 +56,25 @@ function default_settings() {
 
 function update_script() {
 header_info
-if [[ ! -d /opt/Unbound ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
+if [[ ! -d /etc/caddy ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
+msg_info "Updating $APP LXC"
+apt-get update &>/dev/null
+apt-get -y upgrade &>/dev/null
+msg_ok "Updated $APP LXC"
+exit
+}
+
+function update_script() {
+header_info
+if [[ ! -d /opt/unbound ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
 if (( $(df /boot | awk 'NR==2{gsub("%","",$5); print $5}') > 80 )); then
   read -r -p "Warning: Storage is dangerously low, continue anyway? <y/N> " prompt
   [[ ${prompt,,} =~ ^(y|yes)$ ]] || exit
 fi
+msg_info "Updating $APP LXC"
+apt-get update &>/dev/null
+apt-get -y upgrade &>/dev/null
+msg_ok "Updated $APP LXC"
 exit
 }
 
