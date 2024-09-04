@@ -58,6 +58,7 @@ server:
   private-address: 10.0.0.0/8
   private-address: fd00::/8
   private-address: fe80::/10
+  access-control: 192.168.0.0/16 allow
 EOF
   wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
   systemctl enable -q --now unbound
