@@ -65,6 +65,22 @@ server:
   verbosity: 1
   log-queries: yes
 EOF
+
+cat <<EOF >/etc/logrotate.d/unbound
+/var/log/unbound.log {
+  daily
+  rotate 7
+  missingok
+  notifempty
+  compress
+  delaycompress
+  sharedscripts
+  create 644
+  postrotate
+    /usr/sbin/unbound-control log_reopen
+  endscript
+}
+EOF
   wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
   touch /var/log/unbound.log
   chown unbound:unbound /var/log/unbound.log
