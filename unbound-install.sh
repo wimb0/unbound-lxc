@@ -13,39 +13,55 @@ setting_up_container
 network_check
 update_os
 
-msg_info "Installing Dependencies"
-$STD apt-get install -y curl
-$STD apt-get install -y sudo
-$STD apt-get install -y mc
-msg_ok "Installed Dependencies"
-
-msg_info "Installing AdGuard Home"
-$STD tar zxvf <(curl -fsSL https://static.adtidy.org/adguardhome/release/AdGuardHome_linux_amd64.tar.gz) -C /opt
-msg_ok "Installed AdGuard Home"
-
-msg_info "Creating Service"
-cat <<EOF >/etc/systemd/system/AdGuardHome.service
-[Unit]
-Description=AdGuard Home: Network-level blocker
-ConditionFileIsExecutable=/opt/AdGuardHome/AdGuardHome
-After=syslog.target network-online.target
-
-[Service]
-StartLimitInterval=5
-StartLimitBurst=10
-ExecStart=/opt/AdGuardHome/AdGuardHome "-s" "run"
-WorkingDirectory=/opt/AdGuardHome
-StandardOutput=file:/var/log/AdGuardHome.out
-StandardError=file:/var/log/AdGuardHome.err
-Restart=always
-RestartSec=10
-EnvironmentFile=-/etc/sysconfig/AdGuardHome
-
-[Install]
-WantedBy=multi-user.target
+msg_info "Installing Unbound"
+$STD apt-get install -y unbound
+cat <<EOF >/etc/unbound/unbound.conf.d/wimbo.conf
+server:
+  verbosity: 0
+  interface: 0.0.0.0
+  port: 5335
+  do-ip6: no
+  do-ip4: yes
+  do-udp: yes
+  do-tcp: yes
+  num-threads: 1
+  hide-identity: yes
+  hide-version: yes
+  harden-glue: yes
+  harden-dnssec-stripped: yes
+  harden-referral-path: yes
+  use-caps-for-id: no
+  harden-algo-downgrade: no
+  qname-minimisation: yes
+  aggressive-nsec: yes
+  rrset-roundrobin: yes
+  cache-min-ttl: 300
+  cache-max-ttl: 14400
+  msg-cache-slabs: 8
+  rrset-cache-slabs: 8
+  infra-cache-slabs: 8
+  key-cache-slabs: 8
+  serve-expired: yes
+  root-hints: /var/lib/unbound/root.hints
+  serve-expired-ttl: 3600
+  edns-buffer-size: 1232
+  prefetch: yes
+  prefetch-key: yes
+  target-fetch-policy: "3 2 1 1 1"
+  unwanted-reply-threshold: 10000000
+  rrset-cache-size: 256m
+  msg-cache-size: 128m
+  so-rcvbuf: 1m
+  private-address: 192.168.0.0/16
+  private-address: 169.254.0.0/16
+  private-address: 172.16.0.0/12
+  private-address: 10.0.0.0/8
+  private-address: fd00::/8
+  private-address: fe80::/10
 EOF
-systemctl enable -q --now AdGuardHome.service
-msg_ok "Created Service"
+  wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
+  systemctl enable -q --now unbound
+  msg_ok "Installed Unbound"
 
 motd_ssh
 customize
