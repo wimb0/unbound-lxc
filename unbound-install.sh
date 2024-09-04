@@ -17,7 +17,7 @@ update_os
 msg_info "Installing Unbound"
 $STD apt-get install -y unbound
 
-cat <<EOF >/etc/unbound/unbound.conf.d/wimbo.conf
+cat <<EOF >/etc/unbound/unbound.conf.d/unbound-lxe.conf
 server:
   verbosity: 0
   interface: 0.0.0.0
