@@ -65,7 +65,6 @@ server:
   logfile: /var/log/unbound.log
   verbosity: 1
   log-queries: yes
-  control-enable: yes
 EOF
 
 wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
