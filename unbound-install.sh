@@ -16,6 +16,7 @@ update_os
 
 msg_info "Installing Unbound"
 $STD apt-get install -y unbound
+
 cat <<EOF >/etc/unbound/unbound.conf.d/wimbo.conf
 server:
   verbosity: 0
@@ -67,6 +68,15 @@ server:
   control-enable: yes
 EOF
 
+wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
+touch /var/log/unbound.log
+chown unbound:unbound /var/log/unbound.log
+systemctl enable -q --now unbound
+msg_info "Restarting Unbound to load new config"
+systemctl restart unbound
+msg_ok "Installed Unbound"
+
+msg_ok "Configuring Logrotate"
 cat <<EOF >/etc/logrotate.d/unbound
 /var/log/unbound.log {
   daily
@@ -83,16 +93,8 @@ cat <<EOF >/etc/logrotate.d/unbound
 }
 EOF
 
-wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
-touch /var/log/unbound.log
-chown unbound:unbound /var/log/unbound.log
 msg_info "Restarting Logrotate"
 systemctl restart logrotate
-systemctl enable -q --now unbound
-msg_info "Restarting Unbound to load new config"
-systemctl restart unbound
-
-msg_ok "Installed Unbound"
 
 motd_ssh
 customize
