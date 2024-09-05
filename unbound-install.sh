@@ -68,6 +68,8 @@ server:
 EOF
 
 wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
+chown unbound:unbound /var/lib/unbound/root.hints
+
 touch /var/log/unbound.log
 chown unbound:unbound /var/log/unbound.log
 systemctl enable -q --now unbound
