@@ -15,7 +15,7 @@ network_check
 update_os
 
 msg_info "Installing Unbound"
-$STD apt-get install -y unbound
+$STD apt-get install -y unbound unbound-host
 
 cat <<EOF >/etc/unbound/unbound.conf.d/unbound-lxe.conf
 server:
