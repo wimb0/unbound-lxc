@@ -67,6 +67,7 @@ server:
   log-queries: yes
   statistics-interval: 0
   extended-statistics: yes
+  harden-below-nxdomain: yes
 EOF
 
 wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
