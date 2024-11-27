@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2021-2024 tteck
-# Author: tteck (tteckster)
-# Modified by wimb0
+# Copyright (c) 2021-2024 community-scripts ORG
+# Author: wimb0
 # License: MIT
-# https://github.com/tteck/Proxmox/raw/main/LICENSE
+# https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
 color
@@ -14,8 +13,18 @@ setting_up_container
 network_check
 update_os
 
+msg_info "Installing Dependencies"
+$STD apt-get install -y \
+  sudo \
+  curl \
+  mc 
+msg_ok "Installed Dependencies"
+
 msg_info "Installing Unbound"
-$STD apt-get install -y unbound unbound-host
+$STD apt-get install -y \
+  unbound \
+  unbound-host
+msg_info "Installed Unbound"
 
 cat <<EOF >/etc/unbound/unbound.conf.d/unbound-lxe.conf
 server:
@@ -61,6 +70,8 @@ server:
   private-address: fd00::/8
   private-address: fe80::/10
   access-control: 192.168.0.0/16 allow
+  access-control: 172.16.0.0/12 allow
+  access-control: 10.0.0.0/8 allow
   chroot: ""
   logfile: /var/log/unbound.log
   verbosity: 1
@@ -70,13 +81,14 @@ server:
   harden-below-nxdomain: yes
 EOF
 
+# Update Root hints from Internic (This file holds the information on root name servers needed to initialize cache of Internet domain name servers)
 wget -qO /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
+# Set unbound user as owner of the root hints file
 chown unbound:unbound /var/lib/unbound/root.hints
 
 touch /var/log/unbound.log
 chown unbound:unbound /var/log/unbound.log
-systemctl enable -q --now unbound
-msg_info "Restarting Unbound to load new config"
+
 systemctl restart unbound
 msg_ok "Installed Unbound"
 
@@ -97,8 +109,8 @@ cat <<EOF >/etc/logrotate.d/unbound
 }
 EOF
 
-msg_info "Restarting Logrotate"
 systemctl restart logrotate
+msg_ok "Restarted Logrotate"
 
 motd_ssh
 customize
