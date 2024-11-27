@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -s https://raw.githubusercontent.com/wimb0/unbound-lxc/main/build.func)
+
 # Copyright (c) 2021-2024 community-scripts ORG
 # Author: wimb0
 # License: MIT
